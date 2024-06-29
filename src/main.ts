@@ -1,9 +1,9 @@
-const os = require('node:os');
-const fs = require('node:fs');
-const util = require('node:util');
-const path = require('node:path');
-const worker_threads = require('node:worker_threads');
-const constants = require('./constants');
+import os from 'node:os';
+import fs from 'node:fs';
+import util from 'node:util';
+import path from 'node:path';
+import worker_threads from 'node:worker_threads';
+import * as constants from './constants';
 
 /*
 Hamburg;12.0
@@ -18,17 +18,29 @@ Conakry;31.2
 Istanbul;23.0
 */
 
-const SEED_FOLDER = '../seed';
-const MEASUREMENTS_FILE_NAME = 'measurements.txt';
-
 const fsOpenAsync = util.promisify(fs.open);
 const fsReadAsync = util.promisify(fs.read);
 const fsCloseAsync = util.promisify(fs.close);
 
+type ThreadConfiguration = {
+    threadId: number;
+    firstCharIdx: number;
+    lastCharIdx: number;
+};
+
+type CityData = {
+    min: number;
+    max: number;
+    sum: number;
+    count: number;
+};
+
 const createPlanForProcessingLargeWeatherStationDataFile = async ({
     weatherStationDataFilePath,
+}: {
+    weatherStationDataFilePath: string;
 }) => {
-    const threadConfigurations = [];
+    const threadConfigurations: ThreadConfiguration[] = [];
 
     const cpuCoreCount = os.cpus().length;
     const fileSizeInBytes = fs.statSync(weatherStationDataFilePath).size;
@@ -45,7 +57,7 @@ const createPlanForProcessingLargeWeatherStationDataFile = async ({
         constants.TEMPERATURE_MAX_SIZE_IN_BYTES + // maximum size of temperature data in bytes
         1; // character \n
 
-    const fileDescriptor = await fsOpenAsync(weatherStationDataFilePath);
+    const fileDescriptor = await fsOpenAsync(weatherStationDataFilePath, 'r');
 
     for (let threadId = 0; threadId < numberOfWorkerThreadsToUse; threadId++) {
         const prevThreadConfiguration = threadConfigurations[threadId - 1];
@@ -99,7 +111,10 @@ const createPlanForProcessingLargeWeatherStationDataFile = async ({
 const collateWeatherStationDataChunkOnWorkerThread = async ({
     weatherStationDataFilePath,
     threadConfiguration,
-}) => {
+}: {
+    weatherStationDataFilePath: string;
+    threadConfiguration: ThreadConfiguration;
+}): Promise<{ [index: string]: CityData }> => {
     return new Promise((resolve, reject) => {
         const worker = new worker_threads.Worker(
             path.join(__dirname, './worker.js'),
@@ -118,11 +133,11 @@ const collateWeatherStationDataChunkOnWorkerThread = async ({
 (async () => {
     const start = new Date().getTime();
 
-    const weatherStationDataFilePath = path.join(
-        __dirname,
-        SEED_FOLDER,
-        MEASUREMENTS_FILE_NAME
-    );
+    const weatherStationDataFilePath = process.env.SOURCE_FILE_PATH;
+
+    if (!weatherStationDataFilePath) {
+        throw new Error(`SOURCE_FILE_PATH not specified`);
+    }
 
     const threadConfigurations =
         await createPlanForProcessingLargeWeatherStationDataFile({
@@ -138,7 +153,7 @@ const collateWeatherStationDataChunkOnWorkerThread = async ({
         })
     );
 
-    const finalDataSet = {};
+    const finalDataSet: { [index: string]: CityData } = {};
 
     for (
         let i = 0, iMax = collatedWeatherStationDataList.length;

@@ -3,12 +3,16 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
+        "build": "tsc",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",
     "license": "ISC",
     "description": "",
     "devDependencies": {
-        "prettier": "3.3.2"
+        "@tsconfig/node22": "^22.0.0",
+        "@types/node": "^20.14.9",
+        "prettier": "3.3.2",
+        "typescript": "^5.5.2"
     }
 }

@@ -1,11 +1,28 @@
-const fs = require('node:fs');
-const { Transform } = require('node:stream');
-const { finished } = require('node:stream/promises');
-const { workerData, parentPort } = require('node:worker_threads');
-const constants = require('./constants');
-const transforms = require('./transforms');
+import fs from 'node:fs';
+import { Transform, finished } from 'node:stream';
+import { workerData, parentPort } from 'node:worker_threads';
+import util from 'node:util';
+import * as constants from './constants';
 
-const run = async (workerData) => {
+type CityData = {
+    min: number;
+    max: number;
+    sum: number;
+    count: number;
+};
+
+type WorkerData = {
+    weatherStationDataFilePath: string;
+    threadConfiguration: {
+        threadId: number;
+        firstCharIdx: number;
+        lastCharIdx: number;
+    };
+};
+
+const streamFinishedAsync = util.promisify(finished);
+
+const run = async (workerData: WorkerData) => {
     const highWaterMark = Math.pow(2, 20);
 
     let writeIntoCityBuffer = true;
@@ -22,7 +39,7 @@ const run = async (workerData) => {
         0
     );
 
-    const groupedTemperatureData = {};
+    const groupedTemperatureData: { [index: string]: CityData } = {};
 
     const readStream = fs.createReadStream(
         workerData.weatherStationDataFilePath,
@@ -36,7 +53,7 @@ const run = async (workerData) => {
     const transformStream = new Transform({
         transform: (chunk, encoding, callback) => {
             for (let i = 0, iMax = chunk.length; i < iMax; i++) {
-                c = chunk[i];
+                const c = chunk[i];
 
                 if (c === constants.CHAR_SEMICOLON) {
                     writeIntoCityBuffer = false;
@@ -93,12 +110,15 @@ const run = async (workerData) => {
 
     readStream.pipe(transformStream);
 
-    await finished(readStream);
+    await streamFinishedAsync(readStream);
 
     return groupedTemperatureData;
 };
 
 (async () => {
+    if (!parentPort) {
+        throw new Error(`No message port`);
+    }
     const result = await run(workerData);
     parentPort.postMessage(result);
 })();
