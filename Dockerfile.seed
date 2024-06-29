@@ -1,0 +1,19 @@
+FROM ubuntu:20.04
+
+ARG WORKDIR=/app/1brc
+
+RUN apt update
+RUN apt install openjdk-21-jdk -y
+RUN apt install git-all -y
+
+RUN mkdir /app
+
+RUN git clone https://github.com/gunnarmorling/1brc.git $WORKDIR
+
+WORKDIR $WORKDIR
+
+RUN ./mvnw clean verify
+
+ENV NUM_OF_ROWS_TO_GENERATE=1000
+
+CMD ["sh", "-c", "./create_measurements.sh $NUM_OF_ROWS_TO_GENERATE && mv ./measurements.txt /srv/measurements.txt && chmod 777 /srv/measurements.txt"]
