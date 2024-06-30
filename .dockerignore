@@ -1,3 +1,5 @@
 dist
+docker
 node_modules
-seed
+Makefile
+README.md

@@ -8,8 +8,10 @@ import { visualizeAggregatedWeatherStationDataList } from './weather-station-dat
     const aggregatedWeatherStationDataList =
         await getAggregatedWeatherStationDataList({
             logLevel: processEnv.LOG_LEVEL,
-            weatherStationDataFilePath:
-                processEnv.WEATHER_STATION_DATA_FILE_PATH,
+            weatherStationDataFolderPath:
+                processEnv.WEATHER_STATION_DATA_FOLDER_PATH,
+            weatherStationDataFileName:
+                processEnv.WEATHER_STATION_DATA_FILE_NAME,
         });
 
     const result = visualizeAggregatedWeatherStationDataList({

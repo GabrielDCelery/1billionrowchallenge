@@ -5,7 +5,8 @@ const runTimeEnvSchema = zod.object({
         .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
         .optional()
         .default('error'),
-    WEATHER_STATION_DATA_FILE_PATH: zod.string(),
+    WEATHER_STATION_DATA_FOLDER_PATH: zod.string(),
+    WEATHER_STATION_DATA_FILE_NAME: zod.string(),
     VISUALIZER: zod.enum(['default']).optional().default('default'),
 });
 

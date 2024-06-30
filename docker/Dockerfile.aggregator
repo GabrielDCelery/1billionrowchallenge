@@ -1,0 +1,14 @@
+FROM node:22-alpine AS builder
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+
+FROM node:22-alpine
+
+WORKDIR /app
+COPY --from=builder /app/dist /app
+CMD ["sh", "-c", "LOG_LEVEL=$log_level WEATHER_STATION_DATA_FOLDER_PATH=$weather_station_data_folder_path WEATHER_STATION_DATA_FILE_NAME=$weather_station_data_file_name node ./main.js"]

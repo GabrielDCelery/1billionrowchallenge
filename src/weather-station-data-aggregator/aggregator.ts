@@ -35,12 +35,19 @@ const aggregateWeatherStationDataChunkOnWorkerThread = async ({
 
 export const getAggregatedWeatherStationDataList = async ({
     logLevel,
-    weatherStationDataFilePath,
+    weatherStationDataFolderPath,
+    weatherStationDataFileName,
 }: {
     logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace';
-    weatherStationDataFilePath: string;
+    weatherStationDataFolderPath: string;
+    weatherStationDataFileName: string;
 }): Promise<AggregatedWeatherStationData[]> => {
     const logger = createLogger({ logLevel });
+
+    const weatherStationDataFilePath = path.join(
+        weatherStationDataFolderPath,
+        weatherStationDataFileName
+    );
 
     const threadConfigurations =
         await createPlanForProcessingLargeWeatherStationDataFile(
