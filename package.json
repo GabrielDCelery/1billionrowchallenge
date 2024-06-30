@@ -3,7 +3,10 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "build": "tsc",
+        "build:prepare": "rm -Rf dist && mkdir dist",
+        "build:dependencies": "cp ./package*.json ./dist/ && cd dist && npm install --omit=dev",
+        "build:transpile": "tsc",
+        "build": "npm run build:prepare && npm run build:dependencies && npm run build:transpile",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",

@@ -21,4 +21,5 @@ export type AggregatedWeatherStationData = {
 export type WorkerThreadInput = {
     weatherStationDataFilePath: string;
     threadConfiguration: ThreadConfiguration;
+    logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace';
 };

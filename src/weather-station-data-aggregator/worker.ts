@@ -4,10 +4,20 @@ import { workerData, parentPort } from 'node:worker_threads';
 import util from 'node:util';
 import * as constants from '../constants';
 import * as types from './types';
+import * as logging from '../logging';
 
 const streamFinishedAsync = util.promisify(finished);
 
 const run = async (workerData: types.WorkerThreadInput) => {
+    const { weatherStationDataFilePath, threadConfiguration, logLevel } =
+        workerData;
+    const logger = logging.createLogger({ logLevel });
+
+    logger.log(
+        'debug',
+        `Start CPU intensive task on thread ID ${threadConfiguration.threadId}, firstCharIdx ${threadConfiguration.firstCharIdx}, lastCharIdx ${threadConfiguration.lastCharIdx}`
+    );
+
     const highWaterMark = Math.pow(2, 20);
 
     let writeIntoCityBuffer = true;
@@ -28,14 +38,11 @@ const run = async (workerData: types.WorkerThreadInput) => {
         [index: string]: types.SummarizedStationData;
     } = {};
 
-    const readStream = fs.createReadStream(
-        workerData.weatherStationDataFilePath,
-        {
-            highWaterMark: highWaterMark,
-            start: workerData.threadConfiguration.firstCharIdx,
-            end: workerData.threadConfiguration.lastCharIdx,
-        }
-    );
+    const readStream = fs.createReadStream(weatherStationDataFilePath, {
+        highWaterMark: highWaterMark,
+        start: threadConfiguration.firstCharIdx,
+        end: threadConfiguration.lastCharIdx,
+    });
 
     const transformStream = new Transform({
         transform: (chunk, encoding, callback) => {
@@ -101,13 +108,27 @@ const run = async (workerData: types.WorkerThreadInput) => {
 
     await streamFinishedAsync(readStream);
 
-    return summarizedStationDataMap;
+    const aggregatedWeatherStationDataList = Object.keys(
+        summarizedStationDataMap
+    ).map((stationName) => {
+        const summarizedStationData = summarizedStationDataMap[stationName];
+        const aggregatedWeatherStationData: types.AggregatedWeatherStationData =
+            {
+                stationName: stationName,
+                min: summarizedStationData.min,
+                max: summarizedStationData.max,
+                mean: summarizedStationData.sum / summarizedStationData.count,
+            };
+        return aggregatedWeatherStationData;
+    });
+
+    return aggregatedWeatherStationDataList;
 };
 
 (async () => {
     if (!parentPort) {
         throw new Error(`No message port`);
     }
-    const result = await run(workerData);
-    parentPort.postMessage(result);
+    const aggregatedWeatherStationDataList = await run(workerData);
+    parentPort.postMessage(aggregatedWeatherStationDataList);
 })();
