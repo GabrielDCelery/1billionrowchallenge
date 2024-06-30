@@ -2,27 +2,12 @@ import fs from 'node:fs';
 import { Transform, finished } from 'node:stream';
 import { workerData, parentPort } from 'node:worker_threads';
 import util from 'node:util';
-import * as constants from './constants';
-
-type CityData = {
-    min: number;
-    max: number;
-    sum: number;
-    count: number;
-};
-
-type WorkerData = {
-    weatherStationDataFilePath: string;
-    threadConfiguration: {
-        threadId: number;
-        firstCharIdx: number;
-        lastCharIdx: number;
-    };
-};
+import * as constants from '../constants';
+import * as types from './types';
 
 const streamFinishedAsync = util.promisify(finished);
 
-const run = async (workerData: WorkerData) => {
+const run = async (workerData: types.WorkerThreadInput) => {
     const highWaterMark = Math.pow(2, 20);
 
     let writeIntoCityBuffer = true;
@@ -39,7 +24,9 @@ const run = async (workerData: WorkerData) => {
         0
     );
 
-    const groupedTemperatureData: { [index: string]: CityData } = {};
+    const summarizedStationDataMap: {
+        [index: string]: types.SummarizedStationData;
+    } = {};
 
     const readStream = fs.createReadStream(
         workerData.weatherStationDataFilePath,
@@ -62,7 +49,7 @@ const run = async (workerData: WorkerData) => {
                 }
 
                 if (c === constants.CHAR_NEWLINE) {
-                    const cityName = cityBuffer
+                    const stationName = cityBuffer
                         .subarray(0, cityBufferPointer)
                         .toString();
 
@@ -72,18 +59,20 @@ const run = async (workerData: WorkerData) => {
                             .toString()
                     );
 
-                    const cityData = groupedTemperatureData[cityName] || {
+                    const stationData = summarizedStationDataMap[
+                        stationName
+                    ] || {
                         min: 0,
                         max: 0,
                         sum: 0,
                         count: 0,
                     };
 
-                    groupedTemperatureData[cityName] = {
-                        min: Math.min(cityData.min, temperature),
-                        max: Math.max(cityData.max, temperature),
-                        sum: cityData.sum + temperature,
-                        count: cityData.count + 1,
+                    summarizedStationDataMap[stationName] = {
+                        min: Math.min(stationData.min, temperature),
+                        max: Math.max(stationData.max, temperature),
+                        sum: stationData.sum + temperature,
+                        count: stationData.count + 1,
                     };
 
                     writeIntoCityBuffer = true;
@@ -112,7 +101,7 @@ const run = async (workerData: WorkerData) => {
 
     await streamFinishedAsync(readStream);
 
-    return groupedTemperatureData;
+    return summarizedStationDataMap;
 };
 
 (async () => {

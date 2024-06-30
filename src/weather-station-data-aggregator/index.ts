@@ -1,0 +1,1 @@
+export { getAggregatedWeatherStationDataList } from './aggregator';
