@@ -29,7 +29,7 @@ make build
 ```sh
 # Example use
 
-$ brc_num_of_rows_to_generate=100000 # Or 1000000000 if you want to go for the lot
+$ brc_num_of_rows_to_generate=100000000 # Or 1000000000 if you want to go for the lot
 $ brc_host_weather_station_data_folder=$(mktemp -d)
 $ brc_host_weather_station_data_file_name=weatherdata.txt # You can call this anything but have .txt extension
 

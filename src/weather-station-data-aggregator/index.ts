@@ -1,1 +1,1 @@
-export { getAggregatedWeatherStationDataList } from './aggregator';
+export { getAggregatedWeatherStationDataList } from './get-aggregated-weather-station-data-list';

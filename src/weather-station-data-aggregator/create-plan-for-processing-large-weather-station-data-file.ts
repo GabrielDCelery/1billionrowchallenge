@@ -9,7 +9,7 @@ const fsOpenAsync = util.promisify(fs.open);
 const fsReadAsync = util.promisify(fs.read);
 const fsCloseAsync = util.promisify(fs.close);
 
-type Conectors = {
+type Connectors = {
     logger: {
         log: (
             logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace',
@@ -23,7 +23,7 @@ type Data = {
 };
 
 export const createPlanForProcessingLargeWeatherStationDataFile = async (
-    connectors: Conectors,
+    connectors: Connectors,
     data: Data
 ): Promise<types.ThreadConfiguration[]> => {
     const threadConfigurations: types.ThreadConfiguration[] = [];

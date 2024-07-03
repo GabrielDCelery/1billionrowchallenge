@@ -7,7 +7,7 @@
         "build:dependencies": "cp ./package*.json ./dist/ && cd dist && npm install --omit=dev",
         "build:transpile": "tsc",
         "build": "npm run build:prepare && npm run build:dependencies && npm run build:transpile",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "node --import tsx --test ./src/**/*.spec.ts"
     },
     "author": "",
     "license": "ISC",
@@ -15,8 +15,10 @@
     "devDependencies": {
         "@tsconfig/node22": "^22.0.0",
         "@types/node": "^20.14.9",
+        "assert": "^2.1.0",
         "prettier": "3.3.2",
-        "typescript": "^5.5.2"
+        "tsx": "^4.16.2",
+        "typescript": "^5.5.3"
     },
     "dependencies": {
         "winston": "^3.13.0",
