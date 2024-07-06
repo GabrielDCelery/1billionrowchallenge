@@ -8,38 +8,9 @@ import {
     SummarizedStationData,
 } from '../types';
 import logging from '../../logging';
+import transforms from './transforms';
 
 const streamFinishedAsync = util.promisify(finished);
-
-export const transformTemperatureBufferToTemperature = (
-    temperatureBuffer: Buffer
-): number => {
-    let final = 0;
-
-    let pointer = 0;
-
-    let signature = 1;
-
-    if (temperatureBuffer[pointer] === 45) {
-        pointer += 1;
-        signature = -1;
-    }
-
-    final += temperatureBuffer[pointer] - 48;
-
-    pointer += 1;
-
-    if (temperatureBuffer[pointer] !== 46) {
-        final = final * 10 + (temperatureBuffer[pointer] - 48);
-        pointer += 1;
-    }
-
-    pointer += 1;
-
-    final = final * 10 + (temperatureBuffer[pointer] - 48);
-
-    return signature * final;
-};
 
 export const readFileChunkIntoAggregatedWeatherStationDataList = async (
     workerData: WorkerThreadInput
@@ -97,7 +68,7 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
                         .toString();
 
                     const temperature =
-                        transformTemperatureBufferToTemperature(
+                        transforms.transformTemperatureBufferToTemperature(
                             temperatureBuffer
                         );
 

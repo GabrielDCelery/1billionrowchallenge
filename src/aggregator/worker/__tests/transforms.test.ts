@@ -1,6 +1,6 @@
 import assert from 'assert/strict';
 import { describe, test } from 'node:test';
-import { transformTemperatureBufferToTemperature } from './read-file-chunk-into-aggregated-weather-station-data-list';
+import transforms from '../transforms';
 
 describe('transformTemperatureBufferToTemperature', () => {
     const temperatures = ['0.0', '99.9', '-99.9', '23.1', '-1.5', '-33.0'];
@@ -15,7 +15,8 @@ describe('transformTemperatureBufferToTemperature', () => {
                 buff.write(temperature, 0, temperature.length, 'utf8');
 
                 // When
-                const result = transformTemperatureBufferToTemperature(buff);
+                const result =
+                    transforms.transformTemperatureBufferToTemperature(buff);
 
                 // Then
                 assert.strictEqual(result, expected);
