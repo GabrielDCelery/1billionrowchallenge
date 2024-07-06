@@ -28,16 +28,16 @@ import logging from './logging';
             { weatherStationDataFilePath }
         );
 
-    const aggregatedWeatherStationDataList =
-        await aggregator.getAggregatedWeatherStationDataList({
+    const aggregatedWeatherStationDataItems =
+        await aggregator.getAggregatedWeatherStationDataItems({
             logLevel: processEnv.LOG_LEVEL,
             threadConfigurations,
             weatherStationDataFilePath,
         });
 
-    const result = visualizer.visualizeAggregatedWeatherStationDataList({
+    const result = visualizer.visualizeAggregatedWeatherStationDataItems({
         style: processEnv.VISUALIZER,
-        aggregatedWeatherStationDataList,
+        aggregatedWeatherStationDataItems,
     });
 
     const end = new Date().getTime();

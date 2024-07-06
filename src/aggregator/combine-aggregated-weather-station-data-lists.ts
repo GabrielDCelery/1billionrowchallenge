@@ -12,16 +12,16 @@ export const combineAggregatedWeatherDataLists = ({
         i < iMax;
         i++
     ) {
-        const aggregatedWeatherStationDataList =
+        const aggregatedWeatherStationDataItems =
             aggregatedWeatherStationDataLists[i];
 
         for (
-            let k = 0, kMax = aggregatedWeatherStationDataList.length;
+            let k = 0, kMax = aggregatedWeatherStationDataItems.length;
             k < kMax;
             k++
         ) {
             const aggregatedWeatherStationData =
-                aggregatedWeatherStationDataList[k];
+                aggregatedWeatherStationDataItems[k];
             if (!finalDataSet[aggregatedWeatherStationData.stationName]) {
                 finalDataSet[aggregatedWeatherStationData.stationName] = {
                     ...aggregatedWeatherStationData,

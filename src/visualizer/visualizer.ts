@@ -1,11 +1,11 @@
 import { AggregatedWeatherStationData } from './types';
 
 const defaultStyle = ({
-    aggregatedWeatherStationDataList,
+    aggregatedWeatherStationDataItems,
 }: {
-    aggregatedWeatherStationDataList: AggregatedWeatherStationData[];
+    aggregatedWeatherStationDataItems: AggregatedWeatherStationData[];
 }): string => {
-    return `{${aggregatedWeatherStationDataList
+    return `{${aggregatedWeatherStationDataItems
         .sort((a, b) => a.stationName.localeCompare(b.stationName))
         .map((stationData) => {
             const { stationName, min, max, mean } = stationData;
@@ -14,19 +14,19 @@ const defaultStyle = ({
         .join(', ')}}`;
 };
 
-export const visualizeAggregatedWeatherStationDataList = ({
+export const visualizeAggregatedWeatherStationDataItems = ({
     style,
-    aggregatedWeatherStationDataList,
+    aggregatedWeatherStationDataItems,
 }: {
     style: 'default';
-    aggregatedWeatherStationDataList: AggregatedWeatherStationData[];
+    aggregatedWeatherStationDataItems: AggregatedWeatherStationData[];
 }): string => {
     switch (style) {
         case 'default': {
-            return defaultStyle({ aggregatedWeatherStationDataList });
+            return defaultStyle({ aggregatedWeatherStationDataItems });
         }
         default: {
-            return defaultStyle({ aggregatedWeatherStationDataList });
+            return defaultStyle({ aggregatedWeatherStationDataItems });
         }
     }
 };

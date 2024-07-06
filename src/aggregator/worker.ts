@@ -5,8 +5,8 @@ import { readFileChunkIntoAggregatedWeatherStationDataList } from './read-file-c
     if (!parentPort) {
         throw new Error(`No message port`);
     }
-    const aggregatedWeatherStationDataList =
+    const aggregatedWeatherStationDataItems =
         await readFileChunkIntoAggregatedWeatherStationDataList(workerData);
 
-    parentPort.postMessage(aggregatedWeatherStationDataList);
+    parentPort.postMessage(aggregatedWeatherStationDataItems);
 })();

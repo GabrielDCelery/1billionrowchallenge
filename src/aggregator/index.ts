@@ -1,3 +1,3 @@
-import { getAggregatedWeatherStationDataList } from './get-aggregated-weather-station-data-list';
+import { getAggregatedWeatherStationDataItems } from './get-aggregated-weather-station-data-list';
 
-export default { getAggregatedWeatherStationDataList };
+export default { getAggregatedWeatherStationDataItems };

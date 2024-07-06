@@ -1,3 +1,3 @@
-import { visualizeAggregatedWeatherStationDataList } from './visualizer';
+import { visualizeAggregatedWeatherStationDataItems } from './visualizer';
 
-export default { visualizeAggregatedWeatherStationDataList };
+export default { visualizeAggregatedWeatherStationDataItems };

@@ -143,7 +143,7 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
 
     await streamFinishedAsync(readStream);
 
-    const aggregatedWeatherStationDataList = Object.keys(
+    const aggregatedWeatherStationDataItems = Object.keys(
         summarizedStationDataMap
     ).map((stationName) => {
         const summarizedStationData = summarizedStationDataMap[stationName];
@@ -156,5 +156,5 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
         return aggregatedWeatherStationData;
     });
 
-    return aggregatedWeatherStationDataList;
+    return aggregatedWeatherStationDataItems;
 };

@@ -38,7 +38,7 @@ type GetAggregatedWeatherStationDataListData = {
     threadConfigurations: ThreadConfiguration[];
 };
 
-export const getAggregatedWeatherStationDataList = async (
+export const getAggregatedWeatherStationDataItems = async (
     data: GetAggregatedWeatherStationDataListData
 ): Promise<AggregatedWeatherStationData[]> => {
     const { logLevel, weatherStationDataFilePath, threadConfigurations } = data;
