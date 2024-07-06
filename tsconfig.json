@@ -3,5 +3,5 @@
     "compilerOptions": {
         "outDir": "dist"
     },
-    "files": ["src/main.ts", "src/weather-station-data-aggregator/worker.ts"]
+    "files": ["src/main.ts", "src/aggregator/worker.ts"]
 }

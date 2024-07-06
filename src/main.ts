@@ -1,25 +1,41 @@
-import { getProcessEnv } from './env';
-import { getAggregatedWeatherStationDataList } from './weather-station-data-aggregator';
-import { visualizeAggregatedWeatherStationDataList } from './weather-station-data-visualizer';
-import { createLogger } from './logging';
+import path from 'node:path';
+import env from './env';
+import visualizer from './visualizer';
+import planner from './planner';
+import aggregator from './aggregator';
+import logging from './logging';
 
 (async () => {
-    const processEnv = getProcessEnv();
-
-    const logger = createLogger({ logLevel: processEnv.LOG_LEVEL });
+    const processEnv = env.getProcessEnv();
 
     const start = new Date().getTime();
 
+    const logger = logging.createLogger({ logLevel: processEnv.LOG_LEVEL });
+
+    const weatherStationDataFilePath = path.join(
+        processEnv.WEATHER_STATION_DATA_FOLDER_PATH,
+        processEnv.WEATHER_STATION_DATA_FILE_NAME
+    );
+
+    logger.log(
+        'debug',
+        `Start processing file at path ${weatherStationDataFilePath}`
+    );
+
+    const threadConfigurations =
+        await planner.createPlanForProcessingLargeWeatherStationDataFile(
+            { logger },
+            { weatherStationDataFilePath }
+        );
+
     const aggregatedWeatherStationDataList =
-        await getAggregatedWeatherStationDataList({
+        await aggregator.getAggregatedWeatherStationDataList({
             logLevel: processEnv.LOG_LEVEL,
-            weatherStationDataFolderPath:
-                processEnv.WEATHER_STATION_DATA_FOLDER_PATH,
-            weatherStationDataFileName:
-                processEnv.WEATHER_STATION_DATA_FILE_NAME,
+            threadConfigurations,
+            weatherStationDataFilePath,
         });
 
-    const result = visualizeAggregatedWeatherStationDataList({
+    const result = visualizer.visualizeAggregatedWeatherStationDataList({
         style: processEnv.VISUALIZER,
         aggregatedWeatherStationDataList,
     });

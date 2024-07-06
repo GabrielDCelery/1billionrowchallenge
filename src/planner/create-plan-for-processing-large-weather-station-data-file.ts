@@ -1,9 +1,7 @@
 import os from 'node:os';
 import fs from 'node:fs';
 import util from 'node:util';
-import { createLogger } from '../logging';
-import * as constants from '../constants';
-import * as types from './types';
+import constants from '../constants';
 
 const fsOpenAsync = util.promisify(fs.open);
 const fsReadAsync = util.promisify(fs.read);
@@ -22,11 +20,17 @@ type Data = {
     weatherStationDataFilePath: string;
 };
 
+type ThreadConfiguration = {
+    threadId: number;
+    firstCharIdx: number;
+    lastCharIdx: number;
+};
+
 export const createPlanForProcessingLargeWeatherStationDataFile = async (
     connectors: Connectors,
     data: Data
-): Promise<types.ThreadConfiguration[]> => {
-    const threadConfigurations: types.ThreadConfiguration[] = [];
+): Promise<ThreadConfiguration[]> => {
+    const threadConfigurations: ThreadConfiguration[] = [];
 
     const cpuCoreCount = os.cpus().length;
     const fileSizeInBytes = fs.statSync(data.weatherStationDataFilePath).size;

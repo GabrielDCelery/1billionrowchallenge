@@ -10,7 +10,7 @@ const runTimeEnvSchema = zod.object({
     VISUALIZER: zod.enum(['default']).optional().default('default'),
 });
 
-export type ProcessEnv = zod.infer<typeof runTimeEnvSchema>;
+type ProcessEnv = zod.infer<typeof runTimeEnvSchema>;
 
 export const getProcessEnv = (): ProcessEnv => {
     return runTimeEnvSchema.parse(process.env);

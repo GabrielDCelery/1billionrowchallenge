@@ -5,8 +5,6 @@ import {
     ThreadConfiguration,
     WorkerThreadInput,
 } from './types';
-import { createPlanForProcessingLargeWeatherStationDataFile } from './create-plan-for-processing-large-weather-station-data-file';
-import { createLogger } from '../logging';
 import { combineAggregatedWeatherDataLists } from './combine-aggregated-weather-station-data-lists';
 
 const aggregateWeatherStationDataChunkOnWorkerThread = async ({
@@ -36,31 +34,14 @@ const aggregateWeatherStationDataChunkOnWorkerThread = async ({
 
 type GetAggregatedWeatherStationDataListData = {
     logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace';
-    weatherStationDataFolderPath: string;
-    weatherStationDataFileName: string;
+    weatherStationDataFilePath: string;
+    threadConfigurations: ThreadConfiguration[];
 };
 
 export const getAggregatedWeatherStationDataList = async (
     data: GetAggregatedWeatherStationDataListData
 ): Promise<AggregatedWeatherStationData[]> => {
-    const {
-        logLevel,
-        weatherStationDataFolderPath,
-        weatherStationDataFileName,
-    } = data;
-
-    const logger = createLogger({ logLevel });
-
-    const weatherStationDataFilePath = path.join(
-        weatherStationDataFolderPath,
-        weatherStationDataFileName
-    );
-
-    const threadConfigurations =
-        await createPlanForProcessingLargeWeatherStationDataFile(
-            { logger },
-            { weatherStationDataFilePath }
-        );
+    const { logLevel, weatherStationDataFilePath, threadConfigurations } = data;
 
     const aggregatedWeatherStationDataLists = await Promise.all(
         threadConfigurations.map((threadConfiguration) => {

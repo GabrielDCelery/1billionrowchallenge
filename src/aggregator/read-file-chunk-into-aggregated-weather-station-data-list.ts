@@ -1,18 +1,13 @@
 import fs from 'node:fs';
 import { Transform, finished } from 'node:stream';
 import util from 'node:util';
-import {
-    CHAR_SEMICOLON,
-    CHAR_NEWLINE,
-    STATION_NAME_MAX_SIZE_IN_BYTES,
-    TEMPERATURE_MAX_SIZE_IN_BYTES,
-} from '../constants';
+import constants from '../constants';
 import {
     AggregatedWeatherStationData,
     WorkerThreadInput,
     SummarizedStationData,
 } from './types';
-import * as logging from '../logging';
+import logging from '../logging';
 
 const streamFinishedAsync = util.promisify(finished);
 
@@ -63,11 +58,17 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
 
     let writeIntoCityBuffer = true;
     let cityBufferPointer = 0;
-    const cityBuffer = Buffer.alloc(STATION_NAME_MAX_SIZE_IN_BYTES, 0);
+    const cityBuffer = Buffer.alloc(
+        constants.STATION_NAME_MAX_SIZE_IN_BYTES,
+        0
+    );
 
     let writeIntoTemperatureBuffer = false;
     let temperatureBufferPointer = 0;
-    const temperatureBuffer = Buffer.alloc(TEMPERATURE_MAX_SIZE_IN_BYTES, 0);
+    const temperatureBuffer = Buffer.alloc(
+        constants.TEMPERATURE_MAX_SIZE_IN_BYTES,
+        0
+    );
 
     const summarizedStationDataMap: {
         [index: string]: SummarizedStationData;
@@ -84,13 +85,13 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
             for (let i = 0, iMax = chunk.length; i < iMax; i++) {
                 const c = chunk[i];
 
-                if (c === CHAR_SEMICOLON) {
+                if (c === constants.CHAR_SEMICOLON) {
                     writeIntoCityBuffer = false;
                     writeIntoTemperatureBuffer = true;
                     continue;
                 }
 
-                if (c === CHAR_NEWLINE) {
+                if (c === constants.CHAR_NEWLINE) {
                     const stationName = cityBuffer
                         .subarray(0, cityBufferPointer)
                         .toString();
