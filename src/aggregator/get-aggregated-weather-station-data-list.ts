@@ -24,7 +24,7 @@ const aggregateWeatherStationDataChunkOnWorkerThread = async ({
         };
 
         const worker = new worker_threads.Worker(
-            path.join(__dirname, './worker.js'),
+            path.join(__dirname, './worker/run.js'),
             { workerData }
         );
         worker.once('message', (data) => resolve(data));

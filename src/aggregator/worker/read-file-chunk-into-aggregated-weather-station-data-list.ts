@@ -1,13 +1,13 @@
 import fs from 'node:fs';
 import { Transform, finished } from 'node:stream';
 import util from 'node:util';
-import constants from '../constants';
+import constants from '../../constants';
 import {
     AggregatedWeatherStationData,
     WorkerThreadInput,
     SummarizedStationData,
-} from './types';
-import logging from '../logging';
+} from '../types';
+import logging from '../../logging';
 
 const streamFinishedAsync = util.promisify(finished);
 
