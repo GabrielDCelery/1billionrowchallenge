@@ -35,7 +35,7 @@ export const createPlanForProcessingLargeWeatherStationDataFile = async (
     const cpuCoreCount = os.cpus().length;
     const fileSizeInBytes = fs.statSync(data.weatherStationDataFilePath).size;
 
-    const numberOfWorkerThreadsToUse = Math.floor(cpuCoreCount * 0.8);
+    const numberOfWorkerThreadsToUse = Math.floor(cpuCoreCount * 1);
 
     connectors.logger.log(
         'debug',
