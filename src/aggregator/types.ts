@@ -11,6 +11,15 @@ export type SummarizedStationData = {
     count: number;
 };
 
+export type SummarizedStationDataV2 = {
+    stationNameBuffer: Buffer;
+    stationNameLengthInBytes: number;
+    min: number;
+    max: number;
+    sum: number;
+    count: number;
+};
+
 export type AggregatedWeatherStationData = {
     stationName: string;
     min: number;

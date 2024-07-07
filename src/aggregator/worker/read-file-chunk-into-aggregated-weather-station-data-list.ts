@@ -2,13 +2,10 @@ import fs from 'node:fs';
 import { Transform, finished } from 'node:stream';
 import util from 'node:util';
 import constants from '../../constants';
-import {
-    AggregatedWeatherStationData,
-    WorkerThreadInput,
-    SummarizedStationData,
-} from '../types';
+import { WorkerThreadInput } from '../types';
 import logging from '../../logging';
 import transforms from './transforms';
+import { SummarizedStationDataMap } from './summarized-station-data-map';
 
 const streamFinishedAsync = util.promisify(finished);
 
@@ -27,22 +24,20 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
 
     const highWaterMark = Math.pow(2, 20);
 
-    let writeIntoCityBuffer = true;
-    let cityBufferPointer = 0;
-    const cityBuffer = Buffer.alloc(
+    let writeIntoStationBuffer = true;
+    let stationNameLengthInBytes = 0;
+    const stationNameBuffer = Buffer.alloc(
         constants.STATION_NAME_MAX_SIZE_IN_BYTES,
         0
     );
 
-    let temperatureBufferPointer = 0;
+    let temperatureLengthInBytes = 0;
     const temperatureBuffer = Buffer.alloc(
         constants.TEMPERATURE_MAX_SIZE_IN_BYTES,
         0
     );
 
-    const summarizedStationDataMap: {
-        [index: string]: SummarizedStationData;
-    } = {};
+    const summarizedStationDataMap = new SummarizedStationDataMap();
 
     const readStream = fs.createReadStream(weatherStationDataFilePath, {
         highWaterMark: highWaterMark,
@@ -56,52 +51,37 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
                 const c = chunk[i];
 
                 if (c === constants.CHAR_SEMICOLON) {
-                    writeIntoCityBuffer = false;
+                    writeIntoStationBuffer = false;
 
                     continue;
                 }
 
                 if (c === constants.CHAR_NEWLINE) {
-                    const stationName = cityBuffer
-                        .subarray(0, cityBufferPointer)
-                        .toString();
-
                     const temperature =
                         transforms.transformTemperatureBufferToTemperature(
                             temperatureBuffer
                         );
 
-                    const stationData = summarizedStationDataMap[
-                        stationName
-                    ] || {
-                        min: 0,
-                        max: 0,
-                        sum: 0,
-                        count: 0,
-                    };
+                    summarizedStationDataMap.append({
+                        stationNameBuffer,
+                        stationNameLengthInBytes,
+                        temperature,
+                    });
 
-                    summarizedStationDataMap[stationName] = {
-                        min: Math.min(stationData.min, temperature),
-                        max: Math.max(stationData.max, temperature),
-                        sum: stationData.sum + temperature,
-                        count: stationData.count + 1,
-                    };
-
-                    writeIntoCityBuffer = true;
-
-                    cityBufferPointer = 0;
-                    temperatureBufferPointer = 0;
+                    writeIntoStationBuffer = true;
+                    stationNameLengthInBytes = 0;
+                    temperatureLengthInBytes = 0;
                     continue;
                 }
 
-                if (writeIntoCityBuffer) {
-                    cityBuffer[cityBufferPointer] = c;
-                    cityBufferPointer++;
+                if (writeIntoStationBuffer) {
+                    stationNameBuffer[stationNameLengthInBytes] = c;
+                    stationNameLengthInBytes++;
                     continue;
                 }
 
-                temperatureBuffer[temperatureBufferPointer] = c;
-                temperatureBufferPointer++;
+                temperatureBuffer[temperatureLengthInBytes] = c;
+                temperatureLengthInBytes++;
             }
 
             callback(null);
@@ -113,18 +93,5 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
 
     await streamFinishedAsync(readStream);
 
-    const aggregatedWeatherStationDataItems = Object.keys(
-        summarizedStationDataMap
-    ).map((stationName) => {
-        const summarizedStationData = summarizedStationDataMap[stationName];
-        const aggregatedWeatherStationData: AggregatedWeatherStationData = {
-            stationName: stationName,
-            min: summarizedStationData.min / 10,
-            max: summarizedStationData.max / 10,
-            mean: summarizedStationData.sum / summarizedStationData.count / 10,
-        };
-        return aggregatedWeatherStationData;
-    });
-
-    return aggregatedWeatherStationDataItems;
+    return summarizedStationDataMap.getAggregaredWeatherStationDataItems();
 };
