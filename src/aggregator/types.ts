@@ -5,13 +5,6 @@ export type ThreadConfiguration = {
 };
 
 export type SummarizedStationData = {
-    min: number;
-    max: number;
-    sum: number;
-    count: number;
-};
-
-export type SummarizedStationDataV2 = {
     stationNameBuffer: Buffer;
     stationNameLengthInBytes: number;
     min: number;

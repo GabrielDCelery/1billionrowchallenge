@@ -5,7 +5,7 @@ import constants from '../../constants';
 import { WorkerThreadInput } from '../types';
 import logging from '../../logging';
 import transforms from './transforms';
-import { SummarizedStationDataMap } from './summarized-station-data-map';
+import { StationDataAggregator } from './station-data-aggregator';
 
 const streamFinishedAsync = util.promisify(finished);
 
@@ -37,7 +37,7 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
         0
     );
 
-    const summarizedStationDataMap = new SummarizedStationDataMap();
+    const stationDataAggregator = new StationDataAggregator();
 
     const readStream = fs.createReadStream(weatherStationDataFilePath, {
         highWaterMark: highWaterMark,
@@ -62,7 +62,7 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
                             temperatureBuffer
                         );
 
-                    summarizedStationDataMap.append({
+                    stationDataAggregator.appendTemperature({
                         stationNameBuffer,
                         stationNameLengthInBytes,
                         temperature,
@@ -93,5 +93,5 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
 
     await streamFinishedAsync(readStream);
 
-    return summarizedStationDataMap.getAggregaredWeatherStationDataItems();
+    return stationDataAggregator.getAggregaredWeatherStationDataItems();
 };

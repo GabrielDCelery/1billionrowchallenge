@@ -1,21 +1,18 @@
-import {
-    AggregatedWeatherStationData,
-    SummarizedStationDataV2,
-} from '../types';
+import { AggregatedWeatherStationData, SummarizedStationData } from '../types';
 
 const FNV_OFFSET = 2166136261;
 const FNV_PRIME = 16777619;
 
-class SummarizedStationDataMap {
+class StationDataAggregator {
     private keys: number[];
-    private map: Map<number, SummarizedStationDataV2[]>;
+    private map: Map<number, SummarizedStationData[]>;
 
     constructor() {
         this.keys = [];
-        this.map = new Map<number, SummarizedStationDataV2[]>();
+        this.map = new Map<number, SummarizedStationData[]>();
     }
 
-    append({
+    appendTemperature({
         stationNameBuffer,
         stationNameLengthInBytes,
         temperature,
@@ -130,4 +127,4 @@ class SummarizedStationDataMap {
     }
 }
 
-export { SummarizedStationDataMap };
+export { StationDataAggregator };
