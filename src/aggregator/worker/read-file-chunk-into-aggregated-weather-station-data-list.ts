@@ -34,7 +34,6 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
         0
     );
 
-    let writeIntoTemperatureBuffer = false;
     let temperatureBufferPointer = 0;
     const temperatureBuffer = Buffer.alloc(
         constants.TEMPERATURE_MAX_SIZE_IN_BYTES,
@@ -58,7 +57,7 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
 
                 if (c === constants.CHAR_SEMICOLON) {
                     writeIntoCityBuffer = false;
-                    writeIntoTemperatureBuffer = true;
+
                     continue;
                 }
 
@@ -89,7 +88,7 @@ export const readFileChunkIntoAggregatedWeatherStationDataList = async (
                     };
 
                     writeIntoCityBuffer = true;
-                    writeIntoTemperatureBuffer = false;
+
                     cityBufferPointer = 0;
                     temperatureBufferPointer = 0;
                     continue;
