@@ -5,7 +5,7 @@ import {
     ThreadConfiguration,
     WorkerThreadInput,
 } from './types';
-import { combineAggregatedWeatherDataLists } from './combine-aggregated-weather-station-data-lists';
+import { combineAggregatedWeatherStationDataLists } from './combine-aggregated-weather-station-data-lists';
 
 const aggregateWeatherStationDataChunkOnWorkerThread = async ({
     logLevel,
@@ -53,7 +53,7 @@ export const getAggregatedWeatherStationDataItems = async (
         })
     );
 
-    const aggregatedWeatherData = combineAggregatedWeatherDataLists({
+    const aggregatedWeatherData = combineAggregatedWeatherStationDataLists({
         aggregatedWeatherStationDataLists,
     });
 

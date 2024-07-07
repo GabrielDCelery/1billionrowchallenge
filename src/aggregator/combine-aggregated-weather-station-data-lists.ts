@@ -1,6 +1,6 @@
 import { AggregatedWeatherStationData } from './types';
 
-export const combineAggregatedWeatherDataLists = ({
+export const combineAggregatedWeatherStationDataLists = ({
     aggregatedWeatherStationDataLists,
 }: {
     aggregatedWeatherStationDataLists: AggregatedWeatherStationData[][];
