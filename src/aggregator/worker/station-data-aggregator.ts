@@ -35,6 +35,7 @@ class StationDataAggregator {
         for (let i = 0, iMax = existingDataItems.length; i < iMax; i++) {
             const existingDataItem = existingDataItems[i];
             if (
+                existingDataItems.length === 1 ||
                 this.areDataItemsTheSame(existingDataItem, {
                     stationNameBuffer,
                     stationNameLengthInBytes,
