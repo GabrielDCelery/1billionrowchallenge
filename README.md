@@ -24,13 +24,19 @@ Because these days in a business environment rarely anyone will try to write mis
 make build
 ```
 
-2. Run the `generator` container to generate some weather data
+2. Create a folder where you plan on storing the weather data
+
+```sh
+mkdir /tmp/1br
+```
+
+3. Run the `generator` container to generate some weather data
 
 ```sh
 BRC_DATA_DIR=/tmp/1br BRC_FILENAME=weatherdata.txt BRC_NUM_OF_ROWS=1000000000 make generate
 ```
 
-3. Run the `aggregator` container to read the txt file and aggregate the data
+4. Run the `aggregator` container to read the txt file and aggregate the data
 
 ```sh
 BRC_LOG_LEVEL=debug BRC_DATA_DIR=/tmp/1br BRC_FILENAME=weatherdata.txt make aggregate
