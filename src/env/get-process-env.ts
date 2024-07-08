@@ -1,12 +1,12 @@
 import zod from 'zod';
 
 const runTimeEnvSchema = zod.object({
-    LOG_LEVEL: zod
+    BRC_LOG_LEVEL: zod
         .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
         .optional()
         .default('error'),
-    WEATHER_STATION_DATA_FOLDER_PATH: zod.string(),
-    WEATHER_STATION_DATA_FILE_NAME: zod.string(),
+    BRC_DATA_DIR: zod.string(),
+    BRC_FILENAME: zod.string(),
     VISUALIZER: zod.enum(['default']).optional().default('default'),
 });
 

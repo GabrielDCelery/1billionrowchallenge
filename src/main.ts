@@ -10,11 +10,11 @@ import logging from './logging';
 
     const start = new Date().getTime();
 
-    const logger = logging.createLogger({ logLevel: processEnv.LOG_LEVEL });
+    const logger = logging.createLogger({ logLevel: processEnv.BRC_LOG_LEVEL });
 
     const weatherStationDataFilePath = path.join(
-        processEnv.WEATHER_STATION_DATA_FOLDER_PATH,
-        processEnv.WEATHER_STATION_DATA_FILE_NAME
+        processEnv.BRC_DATA_DIR,
+        processEnv.BRC_FILENAME
     );
 
     logger.log(
@@ -30,7 +30,7 @@ import logging from './logging';
 
     const aggregatedWeatherStationDataItems =
         await aggregator.getAggregatedWeatherStationDataItems({
-            logLevel: processEnv.LOG_LEVEL,
+            logLevel: processEnv.BRC_LOG_LEVEL,
             threadConfigurations,
             weatherStationDataFilePath,
         });

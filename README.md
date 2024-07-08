@@ -27,19 +27,11 @@ make build
 2. Run the `generator` container to generate some weather data
 
 ```sh
-# Example use
-
-$ brc_num_of_rows_to_generate=100000000 # Or 1000000000 if you want to go for the lot
-$ brc_host_weather_station_data_folder=$(mktemp -d)
-$ brc_host_weather_station_data_file_name=weatherdata.txt # You can call this anything but have .txt extension
-
-$ brc_host_weather_station_data_folder=$brc_host_weather_station_data_folder brc_host_weather_station_data_file_name=$brc_host_weather_station_data_file_name brc_num_of_rows_to_generate=$brc_num_of_rows_to_generate make generate
+BRC_DATA_DIR=/tmp/1br BRC_FILENAME=weatherdata.txt BRC_NUM_OF_ROWS=1000000000 make generate
 ```
 
 3. Run the `aggregator` container to read the txt file and aggregate the data
 
 ```sh
-$ brc_docker_weather_station_data_folder=/mnt
-$ brc_log_level=debug
-$ brc_host_weather_station_data_folder=$brc_host_weather_station_data_folder brc_docker_weather_station_data_folder=$brc_docker_weather_station_data_folder brc_log_level=$brc_log_level brc_host_weather_station_data_file_name=$brc_host_weather_station_data_file_name make aggregate
+BRC_LOG_LEVEL=debug BRC_DATA_DIR=/tmp/1br BRC_FILENAME=weatherdata.txt make aggregate
 ```

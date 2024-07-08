@@ -12,15 +12,15 @@ build: build-generator-container build-aggregator-container
 
 generate:
 	docker run \
-	-v $(brc_host_weather_station_data_folder):/srv \
-	-e num_of_rows_to_generate=$(brc_num_of_rows_to_generate) \
-	-e host_weather_data_file_name=$(brc_host_weather_station_data_file_name) \
+	-v $(BRC_DATA_DIR):/srv \
+	-e BRC_NUM_OF_ROWS=$(BRC_NUM_OF_ROWS) \
+	-e host_weather_data_file_name=$(BRC_FILENAME) \
 	1brc/generator:latest
 
 aggregate:
 	docker run \
-	-v $(brc_host_weather_station_data_folder):$(brc_docker_weather_station_data_folder) \
-	-e log_level=$(brc_log_level) \
-	-e weather_station_data_folder_path=$(brc_docker_weather_station_data_folder) \
-	-e weather_station_data_file_name=$(brc_host_weather_station_data_file_name) \
+	-v $(BRC_DATA_DIR):/mnt \
+	-e BRC_LOG_LEVEL=$(BRC_LOG_LEVEL) \
+	-e BRC_DATA_DIR=/mnt \
+	-e BRC_FILENAME=$(BRC_FILENAME) \
 	-t 1brc/aggregator:latest
