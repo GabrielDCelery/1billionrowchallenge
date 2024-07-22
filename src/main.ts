@@ -12,10 +12,7 @@ import logging from './logging';
 
     const logger = logging.createLogger({ logLevel: processEnv.BRC_LOG_LEVEL });
 
-    const weatherStationDataFilePath = path.join(
-        processEnv.BRC_DATA_DIR,
-        processEnv.BRC_FILENAME
-    );
+    const weatherStationDataFilePath = processEnv.BRC_FILEPATH;
 
     logger.log(
         'debug',

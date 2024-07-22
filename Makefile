@@ -19,8 +19,7 @@ generate:
 
 aggregate:
 	docker run \
-	-v $(BRC_DATA_DIR):/mnt \
+	-v $(BRC_FILEPATH):$(BRC_FILEPATH) \
 	-e BRC_LOG_LEVEL=$(BRC_LOG_LEVEL) \
-	-e BRC_DATA_DIR=/mnt \
-	-e BRC_FILENAME=$(BRC_FILENAME) \
+	-e BRC_FILEPATH=$(BRC_FILEPATH) \
 	-t 1brc/aggregator:latest

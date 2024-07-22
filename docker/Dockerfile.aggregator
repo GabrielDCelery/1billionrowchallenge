@@ -12,4 +12,4 @@ FROM node:22-alpine
 
 WORKDIR /app
 COPY --from=builder /app/dist /app
-CMD ["sh", "-c", "BRC_LOG_LEVEL=$BRC_LOG_LEVEL BRC_DATA_DIR=$BRC_DATA_DIR BRC_FILENAME=$BRC_FILENAME node ./main.js"]
+CMD ["sh", "-c", "BRC_LOG_LEVEL=$BRC_LOG_LEVEL BRC_FILEPATH=$BRC_FILEPATH node ./main.js"]

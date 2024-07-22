@@ -5,8 +5,7 @@ const runTimeEnvSchema = zod.object({
         .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
         .optional()
         .default('error'),
-    BRC_DATA_DIR: zod.string(),
-    BRC_FILENAME: zod.string(),
+    BRC_FILEPATH: zod.string(),
     VISUALIZER: zod.enum(['default']).optional().default('default'),
 });
 

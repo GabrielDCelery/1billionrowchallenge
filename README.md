@@ -39,5 +39,5 @@ BRC_DATA_DIR=/tmp/1br BRC_FILENAME=weatherdata.txt BRC_NUM_OF_ROWS=1000000000 ma
 4. Run the `aggregator` container to read the txt file and aggregate the data
 
 ```sh
-BRC_LOG_LEVEL=debug BRC_DATA_DIR=/tmp/1br BRC_FILENAME=weatherdata.txt make aggregate
+BRC_LOG_LEVEL=debug BRC_FILEPATH=/tmp/1br/weatherdata.txt make aggregate
 ```
