@@ -10,9 +10,8 @@ import { StationDataAggregator } from './station-data-aggregator';
 
     const stationDataAggregator = new StationDataAggregator();
 
-    const aggregatedWeatherStationDataItems = await stationDataAggregator.run({
-        request: { ...threadConfiguration },
-    });
+    const aggregatedWeatherStationDataItems =
+        await stationDataAggregator.run(threadConfiguration);
 
     parentPort.postMessage(aggregatedWeatherStationDataItems);
 })();

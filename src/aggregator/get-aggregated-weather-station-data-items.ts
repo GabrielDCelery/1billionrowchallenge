@@ -20,18 +20,14 @@ type Request = {
     threadConfigurations: ThreadConfiguration[];
 };
 
-export const getAggregatedWeatherStationDataItems = async ({
-    connectors,
-    request,
-}: {
-    connectors: Connectors;
-    request: Request;
-}): Promise<AggregatedWeatherStationData[]> => {
+export const getAggregatedWeatherStationDataItems = async (
+    connectors: Connectors,
+    request: Request
+): Promise<AggregatedWeatherStationData[]> => {
     const aggregatedWeatherStationDataLists = await Promise.all(
         request.threadConfigurations.map((threadConfiguration) => {
-            return aggregateWeatherStationDataChunkOnWorkerThread({
-                connectors,
-                request: { threadConfiguration },
+            return aggregateWeatherStationDataChunkOnWorkerThread(connectors, {
+                threadConfiguration,
             });
         })
     );
@@ -43,13 +39,10 @@ export const getAggregatedWeatherStationDataItems = async ({
     return aggregatedWeatherData;
 };
 
-const aggregateWeatherStationDataChunkOnWorkerThread = async ({
-    connectors,
-    request,
-}: {
-    connectors: Connectors;
-    request: { threadConfiguration: ThreadConfiguration };
-}): Promise<AggregatedWeatherStationData[]> => {
+const aggregateWeatherStationDataChunkOnWorkerThread = async (
+    connectors: Connectors,
+    request: { threadConfiguration: ThreadConfiguration }
+): Promise<AggregatedWeatherStationData[]> => {
     return new Promise((resolve, reject) => {
         connectors.logger.log(
             'debug',

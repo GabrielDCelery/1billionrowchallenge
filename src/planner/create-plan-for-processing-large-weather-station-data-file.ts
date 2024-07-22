@@ -27,13 +27,10 @@ type ThreadConfiguration = {
     weatherStationDataFilePath: string;
 };
 
-export const createPlanForProcessingLargeWeatherStationDataFile = async ({
-    connectors,
-    request,
-}: {
-    connectors: Connectors;
-    request: Request;
-}): Promise<ThreadConfiguration[]> => {
+export const createPlanForProcessingLargeWeatherStationDataFile = async (
+    connectors: Connectors,
+    request: Request
+): Promise<ThreadConfiguration[]> => {
     const threadConfigurations: ThreadConfiguration[] = [];
 
     const cpuCoreCount = os.cpus().length;

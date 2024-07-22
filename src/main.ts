@@ -20,16 +20,16 @@ import logging from './logging';
     );
 
     const threadConfigurations =
-        await planner.createPlanForProcessingLargeWeatherStationDataFile({
-            connectors: { logger },
-            request: { weatherStationDataFilePath },
-        });
+        await planner.createPlanForProcessingLargeWeatherStationDataFile(
+            { logger },
+            { weatherStationDataFilePath }
+        );
 
     const aggregatedWeatherStationDataItems =
-        await aggregator.getAggregatedWeatherStationDataItems({
-            connectors: { logger },
-            request: { threadConfigurations },
-        });
+        await aggregator.getAggregatedWeatherStationDataItems(
+            { logger },
+            { threadConfigurations }
+        );
 
     const result = visualizer.visualizeAggregatedWeatherStationDataItems({
         style: processEnv.VISUALIZER,

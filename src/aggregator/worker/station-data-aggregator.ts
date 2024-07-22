@@ -19,14 +19,10 @@ class StationDataAggregator {
         this.map = new Map<number, SummarizedStationData[]>();
     }
 
-    async run({
-        request,
-    }: {
-        request: {
-            firstCharIdx: number;
-            lastCharIdx: number;
-            weatherStationDataFilePath: string;
-        };
+    async run(request: {
+        firstCharIdx: number;
+        lastCharIdx: number;
+        weatherStationDataFilePath: string;
     }): Promise<AggregatedWeatherStationData[]> {
         const highWaterMark = Math.pow(2, 20);
 
