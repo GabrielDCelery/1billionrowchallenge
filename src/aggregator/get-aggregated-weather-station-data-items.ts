@@ -7,48 +7,31 @@ import {
 } from './types';
 import { combineAggregatedWeatherStationDataLists } from './combine-aggregated-weather-station-data-lists';
 
-const aggregateWeatherStationDataChunkOnWorkerThread = async ({
-    logLevel,
-    weatherStationDataFilePath,
-    threadConfiguration,
-}: {
-    logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace';
-    weatherStationDataFilePath: string;
-    threadConfiguration: ThreadConfiguration;
-}): Promise<AggregatedWeatherStationData[]> => {
-    return new Promise((resolve, reject) => {
-        const workerData: WorkerThreadInput = {
-            logLevel,
-            weatherStationDataFilePath,
-            threadConfiguration,
-        };
-
-        const worker = new Worker(path.join(__dirname, './worker/run.js'), {
-            workerData,
-        });
-
-        worker.once('message', (data) => resolve(data));
-        worker.once('error', (error) => reject(error));
-    });
+type Connectors = {
+    logger: {
+        log: (
+            logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace',
+            message: string
+        ) => void;
+    };
 };
 
-type GetAggregatedWeatherStationDataItemsRequest = {
-    logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace';
-    weatherStationDataFilePath: string;
+type Request = {
     threadConfigurations: ThreadConfiguration[];
 };
 
-export const getAggregatedWeatherStationDataItems = async (
-    data: GetAggregatedWeatherStationDataItemsRequest
-): Promise<AggregatedWeatherStationData[]> => {
-    const { logLevel, weatherStationDataFilePath, threadConfigurations } = data;
-
+export const getAggregatedWeatherStationDataItems = async ({
+    connectors,
+    request,
+}: {
+    connectors: Connectors;
+    request: Request;
+}): Promise<AggregatedWeatherStationData[]> => {
     const aggregatedWeatherStationDataLists = await Promise.all(
-        threadConfigurations.map((threadConfiguration) => {
+        request.threadConfigurations.map((threadConfiguration) => {
             return aggregateWeatherStationDataChunkOnWorkerThread({
-                weatherStationDataFilePath,
-                threadConfiguration,
-                logLevel,
+                connectors,
+                request: { threadConfiguration },
             });
         })
     );
@@ -58,4 +41,28 @@ export const getAggregatedWeatherStationDataItems = async (
     });
 
     return aggregatedWeatherData;
+};
+
+const aggregateWeatherStationDataChunkOnWorkerThread = async ({
+    connectors,
+    request,
+}: {
+    connectors: Connectors;
+    request: { threadConfiguration: ThreadConfiguration };
+}): Promise<AggregatedWeatherStationData[]> => {
+    return new Promise((resolve, reject) => {
+        connectors.logger.log(
+            'debug',
+            `Start CPU intensive task on thread ID ${request.threadConfiguration.threadId}, firstCharIdx ${request.threadConfiguration.firstCharIdx}, lastCharIdx ${request.threadConfiguration.lastCharIdx}`
+        );
+
+        const workerData: WorkerThreadInput = { ...request };
+
+        const worker = new Worker(path.join(__dirname, './worker/run.js'), {
+            workerData,
+        });
+
+        worker.once('message', (data) => resolve(data));
+        worker.once('error', (error) => reject(error));
+    });
 };

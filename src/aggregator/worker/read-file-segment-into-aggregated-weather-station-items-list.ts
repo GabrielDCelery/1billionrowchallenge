@@ -3,7 +3,6 @@ import { Transform, finished } from 'node:stream';
 import util from 'node:util';
 import constants from '../../constants';
 import { AggregatedWeatherStationData, WorkerThreadInput } from '../types';
-import logging from '../../logging';
 import transforms from './transforms';
 import { StationDataAggregator } from './station-data-aggregator';
 
@@ -12,15 +11,7 @@ const streamFinishedAsync = util.promisify(finished);
 export const readFileSegmentIntoAggregatedWeatherStationDataItems = async (
     workerData: WorkerThreadInput
 ): Promise<AggregatedWeatherStationData[]> => {
-    const { weatherStationDataFilePath, threadConfiguration, logLevel } =
-        workerData;
-
-    const logger = logging.createLogger({ logLevel });
-
-    logger.log(
-        'debug',
-        `Start CPU intensive task on thread ID ${threadConfiguration.threadId}, firstCharIdx ${threadConfiguration.firstCharIdx}, lastCharIdx ${threadConfiguration.lastCharIdx}`
-    );
+    const { threadConfiguration } = workerData;
 
     const highWaterMark = Math.pow(2, 20);
 
@@ -39,11 +30,14 @@ export const readFileSegmentIntoAggregatedWeatherStationDataItems = async (
 
     const stationDataAggregator = new StationDataAggregator();
 
-    const readStream = fs.createReadStream(weatherStationDataFilePath, {
-        highWaterMark: highWaterMark,
-        start: threadConfiguration.firstCharIdx,
-        end: threadConfiguration.lastCharIdx,
-    });
+    const readStream = fs.createReadStream(
+        threadConfiguration.weatherStationDataFilePath,
+        {
+            highWaterMark: highWaterMark,
+            start: threadConfiguration.firstCharIdx,
+            end: threadConfiguration.lastCharIdx,
+        }
+    );
 
     const transformStream = new Transform({
         transform: (chunk, encoding, callback) => {

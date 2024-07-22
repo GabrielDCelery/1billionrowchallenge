@@ -2,6 +2,7 @@ export type ThreadConfiguration = {
     threadId: number;
     firstCharIdx: number;
     lastCharIdx: number;
+    weatherStationDataFilePath: string;
 };
 
 export type SummarizedStationData = {
@@ -21,7 +22,5 @@ export type AggregatedWeatherStationData = {
 };
 
 export type WorkerThreadInput = {
-    weatherStationDataFilePath: string;
     threadConfiguration: ThreadConfiguration;
-    logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace';
 };

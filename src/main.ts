@@ -30,9 +30,8 @@ import logging from './logging';
 
     const aggregatedWeatherStationDataItems =
         await aggregator.getAggregatedWeatherStationDataItems({
-            logLevel: processEnv.BRC_LOG_LEVEL,
-            threadConfigurations,
-            weatherStationDataFilePath,
+            connectors: { logger },
+            request: { threadConfigurations },
         });
 
     const result = visualizer.visualizeAggregatedWeatherStationDataItems({

@@ -24,6 +24,7 @@ type ThreadConfiguration = {
     threadId: number;
     firstCharIdx: number;
     lastCharIdx: number;
+    weatherStationDataFilePath: string;
 };
 
 export const createPlanForProcessingLargeWeatherStationDataFile = async ({
@@ -72,10 +73,11 @@ export const createPlanForProcessingLargeWeatherStationDataFile = async ({
             firstCharIdx + estimateOfBytesAThreadWillNeedToProcess;
 
         if (estimatedLastCharIdx > fileSizeInBytes) {
-            const threadConfiguration = {
+            const threadConfiguration: ThreadConfiguration = {
                 threadId: threadId,
                 firstCharIdx: firstCharIdx,
                 lastCharIdx: fileSizeInBytes - 1,
+                weatherStationDataFilePath: request.weatherStationDataFilePath,
             };
             threadConfigurations.push(threadConfiguration);
             break;
@@ -97,10 +99,11 @@ export const createPlanForProcessingLargeWeatherStationDataFile = async ({
         const lastCharIdx =
             estimatedLastCharIdx + lookAheadBuffer.indexOf('\n');
 
-        const threadConfiguration = {
+        const threadConfiguration: ThreadConfiguration = {
             threadId: threadId,
             firstCharIdx: firstCharIdx,
             lastCharIdx: lastCharIdx,
+            weatherStationDataFilePath: request.weatherStationDataFilePath,
         };
 
         threadConfigurations.push(threadConfiguration);
