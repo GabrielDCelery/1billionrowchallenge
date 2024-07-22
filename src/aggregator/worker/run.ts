@@ -1,13 +1,18 @@
 import { workerData, parentPort } from 'node:worker_threads';
-import { readFileSegmentIntoAggregatedWeatherStationDataItems } from './read-file-segment-into-aggregated-weather-station-items-list';
+import { StationDataAggregator } from './station-data-aggregator';
 
 (async () => {
     if (!parentPort) {
         throw new Error(`No parent port for worker thread found`);
     }
 
-    const aggregatedWeatherStationDataItems =
-        await readFileSegmentIntoAggregatedWeatherStationDataItems(workerData);
+    const { threadConfiguration } = workerData;
+
+    const stationDataAggregator = new StationDataAggregator();
+
+    const aggregatedWeatherStationDataItems = await stationDataAggregator.run({
+        request: { ...threadConfiguration },
+    });
 
     parentPort.postMessage(aggregatedWeatherStationDataItems);
 })();
