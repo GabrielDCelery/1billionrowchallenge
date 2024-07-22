@@ -16,7 +16,7 @@ type Connectors = {
     };
 };
 
-type Data = {
+type Request = {
     weatherStationDataFilePath: string;
 };
 
@@ -26,14 +26,19 @@ type ThreadConfiguration = {
     lastCharIdx: number;
 };
 
-export const createPlanForProcessingLargeWeatherStationDataFile = async (
-    connectors: Connectors,
-    data: Data
-): Promise<ThreadConfiguration[]> => {
+export const createPlanForProcessingLargeWeatherStationDataFile = async ({
+    connectors,
+    request,
+}: {
+    connectors: Connectors;
+    request: Request;
+}): Promise<ThreadConfiguration[]> => {
     const threadConfigurations: ThreadConfiguration[] = [];
 
     const cpuCoreCount = os.cpus().length;
-    const fileSizeInBytes = fs.statSync(data.weatherStationDataFilePath).size;
+    const fileSizeInBytes = fs.statSync(
+        request.weatherStationDataFilePath
+    ).size;
 
     const numberOfWorkerThreadsToUse = Math.floor(cpuCoreCount * 1);
 
@@ -53,7 +58,7 @@ export const createPlanForProcessingLargeWeatherStationDataFile = async (
         1; // character \n
 
     const fileDescriptor = await fsOpenAsync(
-        data.weatherStationDataFilePath,
+        request.weatherStationDataFilePath,
         'r'
     );
 

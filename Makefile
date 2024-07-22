@@ -14,7 +14,7 @@ generate:
 	docker run \
 	-v $(BRC_DATA_DIR):/srv \
 	-e BRC_NUM_OF_ROWS=$(BRC_NUM_OF_ROWS) \
-	-e host_weather_data_file_name=$(BRC_FILENAME) \
+	-e BRC_FILENAME=$(BRC_FILENAME) \
 	1brc/generator:latest
 
 aggregate:

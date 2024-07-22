@@ -1,5 +1,5 @@
 import { workerData, parentPort } from 'node:worker_threads';
-import { readFileChunkIntoAggregatedWeatherStationDataList } from './read-file-chunk-into-aggregated-weather-station-data-list';
+import { readFileSegmentIntoAggregatedWeatherStationDataItems } from './read-file-segment-into-aggregated-weather-station-items-list';
 
 (async () => {
     if (!parentPort) {
@@ -7,7 +7,7 @@ import { readFileChunkIntoAggregatedWeatherStationDataList } from './read-file-c
     }
 
     const aggregatedWeatherStationDataItems =
-        await readFileChunkIntoAggregatedWeatherStationDataList(workerData);
+        await readFileSegmentIntoAggregatedWeatherStationDataItems(workerData);
 
     parentPort.postMessage(aggregatedWeatherStationDataItems);
 })();

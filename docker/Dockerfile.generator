@@ -14,4 +14,4 @@ WORKDIR $WORKDIR
 
 RUN ./mvnw clean verify
 
-CMD ["sh", "-c", "./create_measurements.sh $BRC_NUM_OF_ROWS && mv ./measurements.txt /srv/$host_weather_data_file_name && chmod 777 /srv/$host_weather_data_file_name"]
+CMD ["sh", "-c", "./create_measurements.sh $BRC_NUM_OF_ROWS && mv ./measurements.txt /srv/$BRC_FILENAME && chmod 777 /srv/$BRC_FILENAME"]

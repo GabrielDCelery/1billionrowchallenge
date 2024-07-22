@@ -23,10 +23,10 @@ import logging from './logging';
     );
 
     const threadConfigurations =
-        await planner.createPlanForProcessingLargeWeatherStationDataFile(
-            { logger },
-            { weatherStationDataFilePath }
-        );
+        await planner.createPlanForProcessingLargeWeatherStationDataFile({
+            connectors: { logger },
+            request: { weatherStationDataFilePath },
+        });
 
     const aggregatedWeatherStationDataItems =
         await aggregator.getAggregatedWeatherStationDataItems({

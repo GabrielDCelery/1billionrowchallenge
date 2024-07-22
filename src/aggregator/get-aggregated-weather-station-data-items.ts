@@ -1,5 +1,5 @@
 import path from 'node:path';
-import worker_threads from 'node:worker_threads';
+import { Worker } from 'node:worker_threads';
 import {
     AggregatedWeatherStationData,
     ThreadConfiguration,
@@ -23,23 +23,23 @@ const aggregateWeatherStationDataChunkOnWorkerThread = async ({
             threadConfiguration,
         };
 
-        const worker = new worker_threads.Worker(
-            path.join(__dirname, './worker/run.js'),
-            { workerData }
-        );
+        const worker = new Worker(path.join(__dirname, './worker/run.js'), {
+            workerData,
+        });
+
         worker.once('message', (data) => resolve(data));
         worker.once('error', (error) => reject(error));
     });
 };
 
-type GetAggregatedWeatherStationDataListData = {
+type GetAggregatedWeatherStationDataItemsRequest = {
     logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace';
     weatherStationDataFilePath: string;
     threadConfigurations: ThreadConfiguration[];
 };
 
 export const getAggregatedWeatherStationDataItems = async (
-    data: GetAggregatedWeatherStationDataListData
+    data: GetAggregatedWeatherStationDataItemsRequest
 ): Promise<AggregatedWeatherStationData[]> => {
     const { logLevel, weatherStationDataFilePath, threadConfigurations } = data;
 

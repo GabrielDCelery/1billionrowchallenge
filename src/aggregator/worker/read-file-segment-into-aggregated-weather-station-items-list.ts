@@ -2,16 +2,16 @@ import fs from 'node:fs';
 import { Transform, finished } from 'node:stream';
 import util from 'node:util';
 import constants from '../../constants';
-import { WorkerThreadInput } from '../types';
+import { AggregatedWeatherStationData, WorkerThreadInput } from '../types';
 import logging from '../../logging';
 import transforms from './transforms';
 import { StationDataAggregator } from './station-data-aggregator';
 
 const streamFinishedAsync = util.promisify(finished);
 
-export const readFileChunkIntoAggregatedWeatherStationDataList = async (
+export const readFileSegmentIntoAggregatedWeatherStationDataItems = async (
     workerData: WorkerThreadInput
-) => {
+): Promise<AggregatedWeatherStationData[]> => {
     const { weatherStationDataFilePath, threadConfiguration, logLevel } =
         workerData;
 
