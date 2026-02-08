@@ -4,6 +4,9 @@ This is my personal take on the 1 billion row challenge where the task is to agg
 
 The original task can be found here -> [LINK](https://github.com/gunnarmorling/1brc)
 
+> [!NOTE]
+> Managed to get down to 10-11 seconds
+
 ![1Billionrow](./assets/screenshot-1billionrow.jpg)
 
 ##### Why JavaScript (Node.js)?
