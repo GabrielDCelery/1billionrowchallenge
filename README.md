@@ -4,6 +4,8 @@ This is my personal take on the 1 billion row challenge where the task is to agg
 
 The original task can be found here -> [LINK](https://github.com/gunnarmorling/1brc)
 
+![1Billionrow](./assets/screenshot-1billionrow.jpg)
+
 ##### Why JavaScript (Node.js)?
 
 Even though this type of task naturally lends itself into using languges that are better suited for computation heavy tasks (for example `Go` or `Rust`) I wanted to take a stab at it using Javascript for two reasons.
