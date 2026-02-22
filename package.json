@@ -4,9 +4,8 @@
     "main": "dist/main.js",
     "scripts": {
         "build:prepare": "rm -Rf dist && mkdir dist",
-        "build:dependencies": "cp ./package*.json ./dist/ && cd dist && npm install --omit=dev",
         "build:transpile": "tsc",
-        "build": "npm run build:prepare && npm run build:dependencies && npm run build:transpile",
+        "build": "npm run build:prepare && npm run build:transpile",
         "test": "node --import tsx --test ./src/**/*.test.ts"
     },
     "author": "",
