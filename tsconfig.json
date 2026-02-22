@@ -1,7 +1,21 @@
 {
-    "extends": "@tsconfig/node22/tsconfig.json",
     "compilerOptions": {
-        "outDir": "dist"
+        // Language & Environment
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es2022",
+
+        // Strict Checking
+        "strict": true,
+
+        // Interop
+        "esModuleInterop": true,
+
+        // Output
+        "outDir": "dist",
+
+        // Performance
+        "skipLibCheck": true
     },
     // need to declare the worker separately otherwise will get runtime error
     "files": ["src/main.ts", "src/aggregator/worker/run.ts"]
