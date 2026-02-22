@@ -1,17 +1,17 @@
-FROM ubuntu:20.04
+FROM eclipse-temurin:21.0.10_7-jdk-noble AS builder
 
-ARG WORKDIR=/app/1brc
+RUN apt update && \
+    apt install git -y --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apt update
-RUN apt install openjdk-21-jdk -y
-RUN apt install git-all -y
+WORKDIR /app/1brc
 
-RUN mkdir /app
+RUN git clone --depth 1 https://github.com/gunnarmorling/1brc.git . && \
+    ./mvnw clean verify
 
-RUN git clone https://github.com/gunnarmorling/1brc.git $WORKDIR
+FROM eclipse-temurin:21.0.10_7-jdk-noble AS runner
 
-WORKDIR $WORKDIR
-
-RUN ./mvnw clean verify
+WORKDIR /app/1brc
+COPY --from=builder /app/1brc .
 
 CMD ["sh", "-c", "./create_measurements.sh $BRC_NUM_OF_ROWS && mv ./measurements.txt /srv/$BRC_FILENAME && chmod 777 /srv/$BRC_FILENAME"]
