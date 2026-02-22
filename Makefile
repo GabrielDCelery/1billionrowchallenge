@@ -11,14 +11,14 @@ build-aggregator-container:
 build: build-generator-container build-aggregator-container
 
 generate:
-	docker run \
+	docker run --rm \
 	-v $(BRC_DATA_DIR):/srv \
 	-e BRC_NUM_OF_ROWS=$(BRC_NUM_OF_ROWS) \
 	-e BRC_FILENAME=$(BRC_FILENAME) \
 	1brc/generator:latest
 
 aggregate:
-	docker run \
+	docker run --rm \
 	-v $(BRC_FILEPATH):$(BRC_FILEPATH) \
 	-e BRC_LOG_LEVEL=$(BRC_LOG_LEVEL) \
 	-e BRC_FILEPATH=$(BRC_FILEPATH) \
