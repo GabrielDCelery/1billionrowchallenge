@@ -14,4 +14,4 @@ FROM eclipse-temurin:21.0.10_7-jdk-noble AS runner
 WORKDIR /app/1brc
 COPY --from=builder /app/1brc .
 
-CMD ["sh", "-c", "./create_measurements.sh $BRC_NUM_OF_ROWS && mv ./measurements.txt /srv/$BRC_FILENAME && chmod 777 /srv/$BRC_FILENAME"]
+CMD ["sh", "-c", "./create_measurements.sh $BRC_NUM_OF_ROWS && mv ./measurements.txt /srv/$BRC_FILENAME && chmod 644 /srv/$BRC_FILENAME"]
