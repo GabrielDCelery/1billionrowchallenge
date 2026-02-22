@@ -1,7 +1,7 @@
 {
     "name": "1billionrowchallenge",
     "version": "1.0.0",
-    "main": "index.js",
+    "main": "dist/main.js",
     "scripts": {
         "build:prepare": "rm -Rf dist && mkdir dist",
         "build:dependencies": "cp ./package*.json ./dist/ && cd dist && npm install --omit=dev",
