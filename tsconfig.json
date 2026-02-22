@@ -3,5 +3,6 @@
     "compilerOptions": {
         "outDir": "dist"
     },
+    // need to declare the worker separately otherwise will get runtime error
     "files": ["src/main.ts", "src/aggregator/worker/run.ts"]
 }
